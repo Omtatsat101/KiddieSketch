@@ -1,0 +1,10 @@
+{
+  "name": "kiddiesketch-toolkit",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Management toolkit for the KiddieSketch Shopify store",
+  "scripts": {
+    "seo-audit": "node scripts/seo-audit.js",
+    "inventory-check": "node scripts/inventory-check.js"
+  }
+}
