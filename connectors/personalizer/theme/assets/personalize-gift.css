@@ -1,0 +1,287 @@
+/* KiddieSketch Personalizer — Phase 1 styles
+   Scoped to .ks-personalizer to avoid theme collisions.
+   Matches KiddieSketch brand palette (warm, kid-friendly). */
+
+.ks-personalizer {
+  --ks-color-primary: #FF6B9D;
+  --ks-color-primary-dark: #e7558a;
+  --ks-color-accent: #FFD93D;
+  --ks-color-border: #e5e5e5;
+  --ks-color-text: #2a2a2a;
+  --ks-color-muted: #6a6a6a;
+  --ks-color-bg: #FFF8F0;
+  --ks-color-bg-alt: #ffffff;
+  --ks-radius: 12px;
+  --ks-radius-sm: 8px;
+
+  margin: 24px 0;
+  padding: 20px;
+  background: var(--ks-color-bg);
+  border: 1px solid var(--ks-color-border);
+  border-radius: var(--ks-radius);
+  font-family: inherit;
+  color: var(--ks-color-text);
+  box-sizing: border-box;
+}
+
+.ks-personalizer *,
+.ks-personalizer *::before,
+.ks-personalizer *::after {
+  box-sizing: border-box;
+}
+
+.ks-personalizer__header {
+  margin-bottom: 16px;
+}
+
+.ks-personalizer__title {
+  margin: 0 0 4px;
+  font-size: 1.15rem;
+  font-weight: 700;
+}
+
+.ks-personalizer__subtitle {
+  margin: 0;
+  font-size: 0.9rem;
+  color: var(--ks-color-muted);
+}
+
+/* Tabs */
+.ks-personalizer__tabs {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 16px;
+  border-bottom: 2px solid var(--ks-color-border);
+}
+
+.ks-personalizer__tab {
+  padding: 10px 16px;
+  font-size: 0.9rem;
+  font-weight: 600;
+  background: transparent;
+  border: none;
+  border-bottom: 2px solid transparent;
+  margin-bottom: -2px;
+  cursor: pointer;
+  color: var(--ks-color-muted);
+  transition: color 0.15s, border-color 0.15s;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.ks-personalizer__tab:hover:not(.is-disabled) {
+  color: var(--ks-color-text);
+}
+
+.ks-personalizer__tab.is-active {
+  color: var(--ks-color-primary);
+  border-bottom-color: var(--ks-color-primary);
+}
+
+.ks-personalizer__tab.is-disabled {
+  cursor: not-allowed;
+  opacity: 0.5;
+}
+
+.ks-personalizer__coming-soon {
+  font-size: 0.65rem;
+  font-weight: 500;
+  padding: 2px 6px;
+  background: var(--ks-color-accent);
+  color: var(--ks-color-text);
+  border-radius: 999px;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+/* Panel */
+.ks-personalizer__panel {
+  display: none;
+}
+
+.ks-personalizer__panel.is-active {
+  display: block;
+}
+
+/* Dropzone */
+.ks-personalizer__dropzone {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 180px;
+  padding: 24px;
+  background: var(--ks-color-bg-alt);
+  border: 2px dashed var(--ks-color-border);
+  border-radius: var(--ks-radius-sm);
+  cursor: pointer;
+  transition: border-color 0.15s, background 0.15s;
+  position: relative;
+  overflow: hidden;
+}
+
+.ks-personalizer__dropzone:hover,
+.ks-personalizer__dropzone.is-drag-over {
+  border-color: var(--ks-color-primary);
+  background: #fff;
+}
+
+.ks-personalizer__dropzone-content {
+  text-align: center;
+  color: var(--ks-color-muted);
+  pointer-events: none;
+}
+
+.ks-personalizer__dropzone-content svg {
+  display: block;
+  margin: 0 auto 8px;
+  color: var(--ks-color-primary);
+}
+
+.ks-personalizer__dropzone-title {
+  margin: 0 0 4px;
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: var(--ks-color-text);
+}
+
+.ks-personalizer__dropzone-hint {
+  margin: 0;
+  font-size: 0.8rem;
+}
+
+.ks-personalizer__dropzone-preview {
+  position: relative;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+}
+
+.ks-personalizer__dropzone-preview img {
+  max-width: 100%;
+  max-height: 240px;
+  border-radius: var(--ks-radius-sm);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+}
+
+.ks-personalizer__remove {
+  background: transparent;
+  border: 1px solid var(--ks-color-border);
+  color: var(--ks-color-text);
+  padding: 6px 12px;
+  font-size: 0.8rem;
+  border-radius: 999px;
+  cursor: pointer;
+  transition: background 0.15s, border-color 0.15s;
+}
+
+.ks-personalizer__remove:hover {
+  background: #fff;
+  border-color: var(--ks-color-primary);
+  color: var(--ks-color-primary);
+}
+
+/* Status */
+.ks-personalizer__status {
+  margin-top: 10px;
+  font-size: 0.85rem;
+  color: var(--ks-color-muted);
+  min-height: 1.2em;
+}
+
+.ks-personalizer__status.is-error {
+  color: #c0392b;
+}
+
+.ks-personalizer__status.is-success {
+  color: #2e7d32;
+}
+
+.ks-personalizer__status.is-loading::after {
+  content: '...';
+  display: inline-block;
+  width: 1.5em;
+  animation: ks-dots 1.2s steps(4) infinite;
+}
+
+@keyframes ks-dots {
+  0%, 20% { content: ''; }
+  40% { content: '.'; }
+  60% { content: '..'; }
+  80%, 100% { content: '...'; }
+}
+
+/* Fields */
+.ks-personalizer__fields {
+  display: grid;
+  gap: 12px;
+  margin-top: 16px;
+}
+
+.ks-personalizer__field {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.ks-personalizer__field-label {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--ks-color-text);
+}
+
+.ks-personalizer__field input,
+.ks-personalizer__field textarea {
+  width: 100%;
+  padding: 10px 12px;
+  font-size: 0.95rem;
+  font-family: inherit;
+  background: var(--ks-color-bg-alt);
+  border: 1px solid var(--ks-color-border);
+  border-radius: var(--ks-radius-sm);
+  color: var(--ks-color-text);
+  resize: vertical;
+  transition: border-color 0.15s, box-shadow 0.15s;
+}
+
+.ks-personalizer__field input:focus,
+.ks-personalizer__field textarea:focus {
+  outline: none;
+  border-color: var(--ks-color-primary);
+  box-shadow: 0 0 0 3px rgba(255, 107, 157, 0.15);
+}
+
+.ks-personalizer__privacy {
+  margin: 12px 0 0;
+  font-size: 0.75rem;
+  color: var(--ks-color-muted);
+  font-style: italic;
+}
+
+.ks-personalizer__ai-placeholder {
+  margin: 0;
+  padding: 20px;
+  text-align: center;
+  font-size: 0.9rem;
+  color: var(--ks-color-muted);
+  background: var(--ks-color-bg-alt);
+  border-radius: var(--ks-radius-sm);
+  border: 1px dashed var(--ks-color-border);
+}
+
+/* Mobile polish */
+@media (max-width: 600px) {
+  .ks-personalizer {
+    padding: 16px;
+  }
+  .ks-personalizer__dropzone {
+    min-height: 140px;
+    padding: 16px;
+  }
+  .ks-personalizer__tab {
+    font-size: 0.85rem;
+    padding: 8px 12px;
+  }
+}

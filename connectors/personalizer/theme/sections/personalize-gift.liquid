@@ -1,0 +1,211 @@
+{%- comment -%}
+  KiddieSketch Personalizer — Phase 1 (upload-only)
+  Drop this section onto any customizable product page.
+  Sidekick-editable via theme Customize.
+
+  Writes to cart as line-item properties:
+    _custom_art_url       — Supabase URL of uploaded art
+    _custom_art_filename  — original filename
+    _custom_art_type      — "upload"  (phase 2 adds "ai")
+    _kid_name             — optional, customer-entered
+    _message_to_mum       — optional, customer-entered
+{%- endcomment -%}
+
+{{ 'personalize-gift.css' | asset_url | stylesheet_tag }}
+
+<div
+  class="ks-personalizer"
+  data-ks-personalizer
+  data-api-base="{{ section.settings.api_base | default: 'https://api.kiddiesketchapp.com' }}"
+  data-merchant-shop="{{ shop.permanent_domain }}"
+  data-product-id="{{ product.id }}"
+  data-product-handle="{{ product.handle }}"
+>
+  <div class="ks-personalizer__header">
+    <h3 class="ks-personalizer__title">
+      {{ section.settings.title | default: 'Personalize this gift' }}
+    </h3>
+    <p class="ks-personalizer__subtitle">
+      {{ section.settings.subtitle | default: 'Make it one-of-a-kind — upload your kid''s drawing below.' }}
+    </p>
+  </div>
+
+  <div class="ks-personalizer__tabs" role="tablist">
+    <button
+      class="ks-personalizer__tab is-active"
+      role="tab"
+      aria-selected="true"
+      aria-controls="ks-tab-upload-{{ section.id }}"
+      data-ks-tab="upload"
+      type="button"
+    >
+      {{ section.settings.upload_tab_label | default: 'Upload sketch' }}
+    </button>
+    <button
+      class="ks-personalizer__tab is-disabled"
+      role="tab"
+      aria-selected="false"
+      aria-controls="ks-tab-ai-{{ section.id }}"
+      data-ks-tab="ai"
+      type="button"
+      disabled
+      title="AI generation coming soon"
+    >
+      {{ section.settings.ai_tab_label | default: 'Generate with AI' }}
+      <span class="ks-personalizer__coming-soon">Coming soon</span>
+    </button>
+  </div>
+
+  {%- comment -%} Upload tab {%- endcomment -%}
+  <div
+    id="ks-tab-upload-{{ section.id }}"
+    class="ks-personalizer__panel is-active"
+    role="tabpanel"
+  >
+    <label class="ks-personalizer__dropzone" data-ks-dropzone>
+      <input
+        type="file"
+        accept="image/png,image/jpeg,image/webp"
+        data-ks-file-input
+        hidden
+      />
+      <div class="ks-personalizer__dropzone-content" data-ks-dropzone-empty>
+        <svg viewBox="0 0 24 24" width="48" height="48" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+          <polyline points="17 8 12 3 7 8"/>
+          <line x1="12" y1="3" x2="12" y2="15"/>
+        </svg>
+        <p class="ks-personalizer__dropzone-title">
+          {{ section.settings.dropzone_title | default: 'Click or drop your kid''s drawing here' }}
+        </p>
+        <p class="ks-personalizer__dropzone-hint">PNG, JPG, WEBP — up to 10 MB</p>
+      </div>
+      <div class="ks-personalizer__dropzone-preview" data-ks-dropzone-preview hidden>
+        <img data-ks-preview-img alt="Your drawing preview" />
+        <button type="button" class="ks-personalizer__remove" data-ks-remove>Remove</button>
+      </div>
+    </label>
+
+    <div class="ks-personalizer__status" data-ks-status role="status" aria-live="polite"></div>
+  </div>
+
+  {%- comment -%} AI tab (Phase 2 — disabled for now) {%- endcomment -%}
+  <div
+    id="ks-tab-ai-{{ section.id }}"
+    class="ks-personalizer__panel"
+    role="tabpanel"
+    hidden
+  >
+    <p class="ks-personalizer__ai-placeholder">
+      AI sketch generation launches after Mother's Day.
+      For now, upload your kid's drawing on the other tab.
+    </p>
+  </div>
+
+  {%- comment -%} Optional personalization fields {%- endcomment -%}
+  <div class="ks-personalizer__fields">
+    <label class="ks-personalizer__field">
+      <span class="ks-personalizer__field-label">{{ section.settings.kid_name_label | default: 'Kid''s name (optional)' }}</span>
+      <input
+        type="text"
+        maxlength="40"
+        placeholder="e.g. Sophie"
+        data-ks-kid-name
+      />
+    </label>
+
+    <label class="ks-personalizer__field">
+      <span class="ks-personalizer__field-label">{{ section.settings.message_label | default: 'Message to Mum (optional)' }}</span>
+      <textarea
+        maxlength="120"
+        rows="2"
+        placeholder="e.g. You're the best mum ever!"
+        data-ks-message
+      ></textarea>
+    </label>
+  </div>
+
+  <p class="ks-personalizer__privacy">
+    {{ section.settings.privacy_note | default: 'Your drawing stays private. We only use it to print your gift.' }}
+  </p>
+</div>
+
+<script src="{{ 'personalize-gift.js' | asset_url }}" defer></script>
+
+{% schema %}
+{
+  "name": "Personalize This Gift",
+  "tag": "section",
+  "class": "section-ks-personalizer",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Copy"
+    },
+    {
+      "type": "text",
+      "id": "title",
+      "label": "Section title",
+      "default": "Personalize this gift"
+    },
+    {
+      "type": "text",
+      "id": "subtitle",
+      "label": "Subtitle",
+      "default": "Make it one-of-a-kind — upload your kid's drawing below."
+    },
+    {
+      "type": "text",
+      "id": "upload_tab_label",
+      "label": "Upload tab label",
+      "default": "Upload sketch"
+    },
+    {
+      "type": "text",
+      "id": "ai_tab_label",
+      "label": "AI tab label",
+      "default": "Generate with AI"
+    },
+    {
+      "type": "text",
+      "id": "dropzone_title",
+      "label": "Dropzone title",
+      "default": "Click or drop your kid's drawing here"
+    },
+    {
+      "type": "text",
+      "id": "kid_name_label",
+      "label": "Kid's name field label",
+      "default": "Kid's name (optional)"
+    },
+    {
+      "type": "text",
+      "id": "message_label",
+      "label": "Message field label",
+      "default": "Message to Mum (optional)"
+    },
+    {
+      "type": "text",
+      "id": "privacy_note",
+      "label": "Privacy note",
+      "default": "Your drawing stays private. We only use it to print your gift."
+    },
+    {
+      "type": "header",
+      "content": "Connection"
+    },
+    {
+      "type": "text",
+      "id": "api_base",
+      "label": "Personalizer API base URL",
+      "default": "https://api.kiddiesketchapp.com",
+      "info": "Staging: api.kiddiesketchapp.com — promote to api.kiddiesketch.app for production."
+    }
+  ],
+  "presets": [
+    {
+      "name": "Personalize This Gift"
+    }
+  ]
+}
+{% endschema %}

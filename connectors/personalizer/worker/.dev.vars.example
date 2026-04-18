@@ -1,0 +1,18 @@
+# Copy to .dev.vars and fill with real values (never commit .dev.vars)
+# Use `wrangler secret put <NAME>` to set these in deployed environments.
+
+SUPABASE_URL=https://<project-ref>.supabase.co
+SUPABASE_SERVICE_ROLE_KEY=eyJ...replace-me...
+
+# Any random string, 32+ chars. Used to hash client IPs so we never store raw IPs.
+HASH_SALT=change-me-to-a-long-random-string
+
+# Optional: Make.com webhook to notify Riket on every new upload (review queue)
+MAKE_REVIEW_WEBHOOK_URL=
+
+# Optional: Slack webhook for error alerts
+SLACK_ALERTS_URL=
+
+# Optional: override the CORS allowlist in dev (comma-separated origins).
+# In production this lives in wrangler.toml [vars].
+ALLOWED_ORIGINS=https://kiddiesketch.com,https://bfeb49-2.myshopify.com,http://localhost:9292

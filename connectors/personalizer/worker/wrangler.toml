@@ -1,0 +1,33 @@
+name = "ks-personalizer-api"
+main = "src/index.js"
+compatibility_date = "2026-04-18"
+compatibility_flags = ["nodejs_compat"]
+
+# ---- Routes ----
+# Staging route. Promote to api.kiddiesketch.app/* once production-ready.
+[[routes]]
+pattern = "api.kiddiesketchapp.com/*"
+zone_name = "kiddiesketchapp.com"
+
+# ---- Vars (non-secret) ----
+[vars]
+ALLOWED_ORIGINS = "https://kiddiesketch.com,https://www.kiddiesketch.com,https://kiddiesketchapp.com,https://bfeb49-2.myshopify.com"
+
+# ---- Secrets ----
+# Set via: wrangler secret put <NAME>
+#   SUPABASE_URL
+#   SUPABASE_SERVICE_ROLE_KEY
+#   HASH_SALT
+#   MAKE_REVIEW_WEBHOOK_URL   (optional)
+#   SLACK_ALERTS_URL          (optional)
+
+# ---- Observability ----
+[observability]
+enabled = true
+
+# ---- Limits ----
+[placement]
+mode = "smart"
+
+[limits]
+cpu_ms = 50

@@ -3,5 +3,11 @@ node_modules/
 .env
 .env.local
 *.log
-# Shopify theme files (pulled locally, not committed)
-theme/
+
+# Shopify theme files pulled locally via `shopify theme pull` (not committed)
+# Only ignore the root-level /theme dir, NOT connector theme artifacts.
+/theme/
+/_working-theme/
+
+# Worker secrets (template .dev.vars.example IS committed)
+.dev.vars

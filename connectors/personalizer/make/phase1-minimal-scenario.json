@@ -1,0 +1,117 @@
+{
+  "_comment": "Phase 1 MINIMAL scenario starter. Import into Make.com as a starting point, then bind the connections (Shopify KiddieSketch 8169522, Gmail, Supabase HTTP). Manual Printify fulfillment for first 10-20 orders while product mapping is built.",
+  "name": "KS | Personalizer Fulfillment (Phase 1 manual)",
+  "flow": [
+    {
+      "id": 1,
+      "module": "shopify:watchOrders",
+      "version": 1,
+      "parameters": {
+        "connection": "SET_TO_KiddieSketch_8169522",
+        "status": "any",
+        "limit": 20
+      },
+      "label": "Shopify · Watch new KS orders"
+    },
+    {
+      "id": 2,
+      "module": "builtin:BasicFeeder",
+      "version": 1,
+      "parameters": {},
+      "mapper": { "array": "{{1.line_items}}" },
+      "label": "Iterate line items"
+    },
+    {
+      "id": 3,
+      "module": "builtin:BasicRouter",
+      "version": 1,
+      "routes": [
+        {
+          "label": "Has custom art",
+          "filter": {
+            "name": "has_custom_art_url",
+            "conditions": [
+              [
+                {
+                  "a": "{{2.properties._custom_art_url}}",
+                  "o": "text:exist"
+                }
+              ]
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "id": 4,
+      "module": "http:ActionSendData",
+      "version": 3,
+      "parameters": {
+        "method": "PATCH",
+        "url": "{{env.SUPABASE_URL}}/rest/v1/custom_art_submissions?art_url=eq.{{encodeURL(2.properties._custom_art_url)}}",
+        "headers": [
+          { "name": "Authorization", "value": "Bearer {{env.SUPABASE_SERVICE_ROLE_KEY}}" },
+          { "name": "apikey", "value": "{{env.SUPABASE_SERVICE_ROLE_KEY}}" },
+          { "name": "Content-Type", "value": "application/json" },
+          { "name": "Prefer", "value": "return=representation" }
+        ],
+        "bodyType": "raw",
+        "contentType": "application/json",
+        "data": "{\n  \"shopify_order_id\": \"{{1.id}}\",\n  \"shopify_order_number\": \"{{1.name}}\",\n  \"shopify_line_item_id\": \"{{2.id}}\",\n  \"shopify_customer_id\": \"{{1.customer.id}}\",\n  \"customer_email\": \"{{1.email}}\"\n}"
+      },
+      "label": "Supabase · Link submission to order"
+    },
+    {
+      "id": 5,
+      "module": "google-email:ActionSendEmail",
+      "version": 1,
+      "parameters": {
+        "connection": "SET_TO_GMAIL_CONNECTION"
+      },
+      "mapper": {
+        "to": "riketpatel@hariomtatsatinvestments.com",
+        "subject": "[KS Fulfill] Custom art on order #{{1.name}} — {{1.email}}",
+        "type": "plain",
+        "content": "New KiddieSketch order with a custom sketch.\n\nOrder: #{{1.name}} ({{1.id}})\nCustomer: {{1.email}} — {{1.shipping_address.first_name}} {{1.shipping_address.last_name}}\nProduct: {{2.title}}\nVariant: {{2.variant_title}}\nQuantity: {{2.quantity}}\n\nArt URL (download this PNG):\n{{2.properties._custom_art_url}}\n\nKid's name: {{2.properties._kid_name}}\nMessage to Mum: {{2.properties._message_to_mum}}\n\nShip-to:\n  {{1.shipping_address.address1}}\n  {{1.shipping_address.address2}}\n  {{1.shipping_address.city}} {{1.shipping_address.province_code}} {{1.shipping_address.zip}}\n  {{1.shipping_address.country}}\n  Phone: {{1.shipping_address.phone}}\n\nNext step — open Printify, create an order on the matching product (Best Mum Ever Mug, etc.), paste the Art URL into the print-area, paste the shipping address, submit. Takes ~2 min.\n\n(Automation note: this scenario will be upgraded to direct Printify API push in Phase 1.5 once product/variant mapping is complete.)"
+      },
+      "label": "Gmail · Notify Riket (fulfillment action needed)"
+    },
+    {
+      "id": 6,
+      "module": "http:ActionSendData",
+      "version": 3,
+      "parameters": {
+        "method": "POST",
+        "url": "{{env.SUPABASE_URL}}/rest/v1/event_log",
+        "headers": [
+          { "name": "Authorization", "value": "Bearer {{env.SUPABASE_SERVICE_ROLE_KEY}}" },
+          { "name": "apikey", "value": "{{env.SUPABASE_SERVICE_ROLE_KEY}}" },
+          { "name": "Content-Type", "value": "application/json" },
+          { "name": "Prefer", "value": "return=minimal" }
+        ],
+        "bodyType": "raw",
+        "contentType": "application/json",
+        "data": "{\n  \"event_type\": \"personalizer.fulfillment_notified\",\n  \"brand\": \"KS\",\n  \"store\": \"KS\",\n  \"payload\": {\n    \"order_id\": \"{{1.id}}\",\n    \"order_number\": \"{{1.name}}\",\n    \"line_item_id\": \"{{2.id}}\",\n    \"art_url\": \"{{2.properties._custom_art_url}}\"\n  }\n}"
+      },
+      "label": "Supabase · event_log write"
+    }
+  ],
+  "metadata": {
+    "instant": false,
+    "version": 1,
+    "scenario": {
+      "roundtrips": 1,
+      "maxErrors": 3,
+      "autoCommit": true,
+      "autoCommitTriggerLast": true,
+      "sequential": false,
+      "confidential": false,
+      "dataloss": false,
+      "dlq": false
+    },
+    "designer": {
+      "orphans": []
+    },
+    "zone": "us1.make.com"
+  }
+}
